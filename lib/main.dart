@@ -40,8 +40,8 @@ class MainApp extends StatelessWidget {
     //   DatabaseController(),
     //   permanent: true,
     // );
-    return StreamBuilder<User?>(
-      stream: _authC.streamUserState,
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         // print(snapshot.data);
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -54,30 +54,7 @@ class MainApp extends StatelessWidget {
             child: Text('Something went wrong'),
           );
         }
-        // if (snapshot.hasData) {
-        //   return GetMaterialApp(
-        //     debugShowCheckedModeBanner: false,
-        //     theme: ThemeData.dark(),
-        //     home: const MainScreen(),
-        //     // initialRoute: RoutesClass.getLoginRoute(),
-        //     getPages: RoutesClass().routes,
-        //   );
-        // }
-        if (snapshot.connectionState == ConnectionState.active) {
-          if (snapshot.data == null) {
-            return GetMaterialApp(
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                textTheme: GoogleFonts.merriweatherTextTheme(
-                  Theme.of(context).textTheme,
-                ),
-              ),
-              // theme: ThemeData.dark(),
-              // home: const MainScreen(),
-              initialRoute: RouteName.login,
-              getPages: RoutesClass.pages,
-            );
-          }
+        if (snapshot.hasData) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
@@ -89,18 +66,66 @@ class MainApp extends StatelessWidget {
             // initialRoute: RoutesClass.getLoginRoute(),
             getPages: RoutesClass.pages,
           );
-        }
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            textTheme: GoogleFonts.merriweatherTextTheme(
-              Theme.of(context).textTheme,
+        } else {
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              textTheme: GoogleFonts.merriweatherTextTheme(
+                Theme.of(context).textTheme,
+              ),
             ),
-          ),
-          // home: const MainScreen(),
-          initialRoute: RouteName.login,
-          getPages: RoutesClass.pages,
-        );
+            // home: const MainScreen(),
+            initialRoute: RouteName.login,
+            getPages: RoutesClass.pages,
+          );
+        }
+        // if (snapshot.hasData) {
+        //   return GetMaterialApp(
+        //     debugShowCheckedModeBanner: false,
+        //     theme: ThemeData.dark(),
+        //     home: const MainScreen(),
+        //     // initialRoute: RoutesClass.getLoginRoute(),
+        //     getPages: RoutesClass().routes,
+        //   );
+        // }
+        // if (snapshot.connectionState == ConnectionState.active) {
+        //   if (snapshot.data == null) {
+        //     return GetMaterialApp(
+        //       debugShowCheckedModeBanner: false,
+        //       theme: ThemeData(
+        //         textTheme: GoogleFonts.merriweatherTextTheme(
+        //           Theme.of(context).textTheme,
+        //         ),
+        //       ),
+        //       // theme: ThemeData.dark(),
+        //       // home: const MainScreen(),
+        //       initialRoute: RouteName.login,
+        //       getPages: RoutesClass.pages,
+        //     );
+        //   }
+        //   return GetMaterialApp(
+        //     debugShowCheckedModeBanner: false,
+        //     theme: ThemeData(
+        //       textTheme: GoogleFonts.merriweatherTextTheme(
+        //         Theme.of(context).textTheme,
+        //       ),
+        //     ),
+        //     home: Home(),
+        //     // initialRoute: RoutesClass.getLoginRoute(),
+        //     getPages: RoutesClass.pages,
+        //   );
+        // }
+        // return GetMaterialApp(
+        //   debugShowCheckedModeBanner: false,
+        //   theme: ThemeData(
+        //     textTheme: GoogleFonts.merriweatherTextTheme(
+        //       Theme.of(context).textTheme,
+        //     ),
+        //   ),
+        //   // home: const MainScreen(),
+        //   initialRoute: RouteName.login,
+        //   getPages: RoutesClass.pages,
+        // );
       },
     );
   }

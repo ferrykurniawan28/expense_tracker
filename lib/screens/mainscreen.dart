@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_tracker/controllers/auth_controller.dart';
-import 'package:expense_tracker/controllers/database_controller.dart';
+// import 'package:expense_tracker/controllers/database_controller.dart';
 import 'package:expense_tracker/controllers/mainscreen_controller.dart';
 import 'package:expense_tracker/models/event.dart';
 import 'package:flutter/material.dart';
@@ -111,112 +111,6 @@ class MainScreen extends GetView<MainScreenController> {
                 Obx(
                   () => Text(controller.selectedDay.toString().split(" ")[0]),
                 ),
-                // Expanded(
-                //   child: ListView.builder(
-                //     itemCount: controller.all.length,
-                //     itemBuilder: (context, index) {
-                //       return Card(
-                //         child: ListTile(
-                //           title: Text(controller.all[index].title),
-                //           subtitle: Text(
-                //             CurrencyFormat.convertToIdr(
-                //                 controller.all[index].amount, 0),
-                //           ),
-                //           trailing: IconButton(
-                //             icon: const Icon(Icons.print),
-                //             onPressed: () {
-                //               print(controller.all);
-                //             },
-                //           ),
-                //         ),
-                //       );
-                //     },
-                //   ),
-                // ),
-                // Expanded(
-                //   child: StreamBuilder(
-                //     stream: db
-                //         .collection('users')
-                //         .doc(auth.currentUserID())
-                //         .collection('history')
-                //         .where('date', isEqualTo: controller.selectedDay)
-                //         .snapshots(),
-                //     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                //       if (snapshot.hasError) {
-                //         return const Text('Something went wrong');
-                //       }
-
-                //       if (snapshot.connectionState == ConnectionState.waiting) {
-                //         return const Text("Loading");
-                //       }
-
-                //       if (snapshot.data!.docs.isEmpty) {
-                //         return const Center(
-                //           child: Text('No posts available.'),
-                //         );
-                //       }
-
-                //       return ListView(
-                //         children:
-                //             snapshot.data!.docs.map((DocumentSnapshot document) {
-                //           Map<String, dynamic> data =
-                //               document.data()! as Map<String, dynamic>;
-                //           return Card(
-                //             child: ListTile(
-                //               title: Text(data['title']),
-                //               subtitle: Text(
-                //                   CurrencyFormat.convertToIdr(data['amount'], 0)),
-                //             ),
-                //           );
-                //         }).toList(),
-                //       );
-                //     },
-                //   ),
-                // ),
-                // Expanded(
-                //   child: ValueListenableBuilder<List<Event>>(
-                //     valueListenable: controller.selectedEvents,
-                //     builder: (context, value, _) {
-                //       return ListView.builder(
-                //         itemCount: value.length,
-                //         itemBuilder: (context, index) {
-                //           return Card(
-                //             child: ListTile(
-                //               title: Text(value[index].title),
-                //               subtitle: Text(
-                //                 CurrencyFormat.convertToIdr(value[index].amount, 0),
-                //               ),
-                //               trailing: IconButton(
-                //                 icon: const Icon(Icons.print),
-                //                 onPressed: () {
-                //                   print(value);
-                //                 },
-                //               ),
-                //             ),
-                //           );
-                //         },
-                //       );
-                //     },
-                //   ),
-                // ),
-                // Obx(
-                //   () {
-                //     controller.getEventsForDay(controller.selectedDay.value).map(
-                //           (Event event) => ListTile(
-                //             title: Text(event.title),
-                //             subtitle:
-                //                 Text(CurrencyFormat.convertToIdr(event.amount, 0)),
-                //             trailing: IconButton(
-                //               icon: const Icon(Icons.print),
-                //               onPressed: () {
-                //                 print(event);
-                //               },
-                //             ),
-                //           ),
-                //         );
-                //     // .toList(),)
-                //   },
-                // ),
                 Expanded(
                   child: ValueListenableBuilder<List<Event>>(
                     valueListenable: controller.selectedEvents,
@@ -240,12 +134,6 @@ class MainScreen extends GetView<MainScreenController> {
                               leading: Icon(value[index].deposit
                                   ? Icons.arrow_upward
                                   : Icons.arrow_downward),
-                              // trailing: IconButton(
-                              //   icon: const Icon(Icons.print),
-                              //   onPressed: () {
-                              //     print(value);
-                              //   },
-                              // ),
                             ),
                           );
                         },

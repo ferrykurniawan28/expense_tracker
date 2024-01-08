@@ -1,3 +1,4 @@
+import 'package:expense_tracker/controllers/balance_controller.dart';
 import 'package:expense_tracker/controllers/database_controller.dart';
 import 'package:expense_tracker/controllers/deposit_cotroller.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class MainScreenController extends GetxController {
 
   final depositC = Get.put(DepositController());
   final dbC = Get.put(DatabaseController());
+  final balanceC = Get.put(BalanceController());
 
   @override
   void onInit() async {
@@ -177,18 +179,20 @@ class MainScreenController extends GetxController {
     this.focusedDay = focusedDay;
   }
 
-  void addEvent() {
+  void addEvent() async {
     if (formKey.currentState!.validate()) {
       if (events[selectedDay] == null) {
         events[selectedDay.value!] = [];
       }
+      final int amount = int.parse(amountController.text);
       final Event event = Event(
         titleController.text,
-        int.parse(amountController.text),
+        amount,
         selectedDay.value!,
         false,
       );
-      dbC.addEvent(event);
+      // await dbC.addEvent(event);
+      balanceC.addExpense(amount);
       events[selectedDay]!.add(
         Event(
           titleController.text,
@@ -199,8 +203,8 @@ class MainScreenController extends GetxController {
       );
       titleController.clear();
       amountController.clear();
-      Get.back();
       selectedEvents.value = getEventsForDay(selectedDay.value!);
+      Get.back();
     }
   }
 
