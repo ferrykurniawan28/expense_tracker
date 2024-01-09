@@ -7,12 +7,33 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   final _auth = FirebaseAuth.instance;
+  RxBool isLoggedIn = false.obs;
 
   Stream<User?> get streamUserState => _auth.authStateChanges();
+
+  @override
+  void onInit() {
+    _subscribe();
+    super.onInit();
+  }
 
   String currentUserID() {
     final uid = _auth.currentUser!.uid;
     return uid;
+  }
+
+  void _subscribe() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        isLoggedIn(false);
+        // log('User is currently signed out');
+        // print('User is currently signed out');
+      } else {
+        isLoggedIn(true);
+        // log('User is signed in');
+        // print('User is signed in');
+      }
+    });
   }
 
   void login(String email, String password) async {

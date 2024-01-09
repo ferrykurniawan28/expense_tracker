@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SignUp extends GetView<SignUpController> {
+  const SignUp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

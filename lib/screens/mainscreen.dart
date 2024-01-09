@@ -1,17 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_tracker/controllers/auth_controller.dart';
-// import 'package:expense_tracker/controllers/database_controller.dart';
 import 'package:expense_tracker/controllers/mainscreen_controller.dart';
 import 'package:expense_tracker/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:expense_tracker/currency.dart';
 
 import 'event_list.dart';
 
-// final auth = FirebaseAuth.instance;
 final db = FirebaseFirestore.instance;
 
 class MainScreen extends GetView<MainScreenController> {
@@ -20,9 +17,7 @@ class MainScreen extends GetView<MainScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    // final dbC = Get.put(DatabaseController());
     final auth = Get.put(AuthController());
-    // List<Event> _all = [];
     return Scaffold(
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
@@ -57,18 +52,34 @@ class MainScreen extends GetView<MainScreenController> {
               );
             }
             if (!controller.initialDataLoaded) {
-              controller.all = snapshot.data!.docs.map<Event>(
-                (data) {
-                  return Event(
-                    data['title'],
-                    data['amount'],
-                    data['date'].toDate(),
-                    data['deposit'],
-                  );
-                },
-              ).toList();
+              if (snapshot.hasData && snapshot.data != null) {
+                controller.all = snapshot.data!.docs.map<Event>(
+                  (data) {
+                    return Event(
+                      data['title'],
+                      data['amount'],
+                      data['date'].toDate(),
+                      data['deposit'],
+                    );
+                  },
+                ).toList();
+              }
               controller.initialDataLoaded = true;
             }
+
+            // if (!controller.initialDataLoaded) {
+            //   controller.all = snapshot.data!.docs.map<Event>(
+            //     (data) {
+            //       return Event(
+            //         data['title'],
+            //         data['amount'],
+            //         data['date'].toDate(),
+            //         data['deposit'],
+            //       );
+            //     },
+            //   ).toList();
+            //   controller.initialDataLoaded = true;
+            // }
             return Column(
               children: [
                 Obx(

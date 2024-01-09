@@ -7,10 +7,16 @@ import 'package:expense_tracker/screens/home.dart';
 import 'package:expense_tracker/screens/login.dart';
 import 'package:expense_tracker/routes/routes_name.dart';
 import 'package:expense_tracker/screens/signup.dart';
+import 'package:expense_tracker/screens/splash.dart';
 import 'package:get/get.dart';
 
 class RoutesClass {
   static final pages = [
+    GetPage(
+      name: RouteName.splash,
+      page: () => const Splash(),
+      // binding: LoginBinding(),
+    ),
     GetPage(
       name: RouteName.login,
       page: () => const Login(),

@@ -1,10 +1,8 @@
 import 'package:expense_tracker/controllers/database_controller.dart';
-import 'package:expense_tracker/controllers/deposit_cotroller.dart';
 import 'package:expense_tracker/controllers/expense%20controller.dart';
 import 'package:expense_tracker/controllers/income_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../models/event.dart';
@@ -20,7 +18,7 @@ class MainScreenController extends GetxController {
   List<Event> all = [];
   Map<DateTime, List<Event>> events = {};
   bool initialDataLoaded = false;
-  bool get isEventsInitialized => selectedEvents != null;
+  // bool get isEventsInitialized => selectedEvents != null;
 
   late ValueNotifier<List<Event>> selectedEvents;
 

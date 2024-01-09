@@ -1,5 +1,4 @@
 import 'package:expense_tracker/controllers/auth_controller.dart';
-import 'package:expense_tracker/controllers/deposit_cotroller.dart';
 import 'package:expense_tracker/controllers/login_controller.dart';
 import 'package:get/get.dart';
 

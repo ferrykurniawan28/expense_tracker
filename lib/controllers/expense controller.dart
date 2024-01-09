@@ -32,8 +32,8 @@ class ExpenseController extends GetxController {
     await _dbC.updateExpense(expense.value);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 }

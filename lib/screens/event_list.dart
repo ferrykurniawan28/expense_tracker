@@ -1,5 +1,5 @@
 import 'package:expense_tracker/controllers/mainscreen_controller.dart';
-import 'package:expense_tracker/currency.dart';
+import 'package:expense_tracker/models/currency.dart';
 import 'package:expense_tracker/models/event.dart';
 import 'package:flutter/material.dart';
 

@@ -2,7 +2,7 @@ import 'package:expense_tracker/controllers/balance_controller.dart';
 import 'package:expense_tracker/controllers/expense%20controller.dart';
 import 'package:expense_tracker/controllers/homemain_controller.dart';
 import 'package:expense_tracker/controllers/income_controller.dart';
-import 'package:expense_tracker/currency.dart';
+import 'package:expense_tracker/models/currency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
@@ -15,7 +15,7 @@ class HomeMain extends GetView<HomeMainController> {
     final balanceC = Get.put(BalanceController());
     final exC = Get.put(ExpenseController());
     final incomeC = Get.put(IncomeController());
-    final homeC = Get.put(HomeMainController());
+    // final homeC = Get.put(HomeMainController());
     return Scaffold(
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
@@ -179,7 +179,7 @@ class HomeMain extends GetView<HomeMainController> {
             ),
           ),
           Card(
-            color: Color.fromARGB(255, 64, 58, 122),
+            color: const Color.fromARGB(255, 64, 58, 122),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
