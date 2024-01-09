@@ -19,7 +19,7 @@ class AuthController extends GetxController {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       Get.snackbar('Success', 'Logged in successfully');
-      Get.toNamed(RouteName.home);
+      // Get.toNamed(RouteName.home);
       Get.offAllNamed(RouteName.home);
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Error', e.message!);

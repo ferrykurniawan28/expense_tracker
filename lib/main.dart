@@ -62,8 +62,8 @@ class MainApp extends StatelessWidget {
                 Theme.of(context).textTheme,
               ),
             ),
-            home: Home(),
-            // initialRoute: RoutesClass.getLoginRoute(),
+            // home: Home(),
+            initialRoute: RouteName.home,
             getPages: RoutesClass.pages,
           );
         } else {

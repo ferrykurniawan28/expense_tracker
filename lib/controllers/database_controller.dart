@@ -28,6 +28,46 @@ class DatabaseController extends GetxController {
     }
   }
 
+  Future<int> getExpense() async {
+    try {
+      DocumentSnapshot balance = await _db
+          .collection('users')
+          .doc(_auth.currentUserID())
+          .collection('expense')
+          .doc(_auth.currentUserID())
+          .get();
+
+      if (balance.exists) {
+        return balance['expense'] ?? 0;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+      return 0;
+    }
+  }
+
+  Future<int> getIncome() async {
+    try {
+      DocumentSnapshot balance = await _db
+          .collection('users')
+          .doc(_auth.currentUserID())
+          .collection('income')
+          .doc(_auth.currentUserID())
+          .get();
+
+      if (balance.exists) {
+        return balance['income'] ?? 0;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+      return 0;
+    }
+  }
+
   Future<int> getTargetBalance() async {
     try {
       DocumentSnapshot balance = await _db
@@ -63,6 +103,21 @@ class DatabaseController extends GetxController {
     }
   }
 
+  Future<void> updateExpense(int expense) async {
+    try {
+      await _db
+          .collection('users')
+          .doc(_auth.currentUserID())
+          .collection('expense')
+          .doc(_auth.currentUserID())
+          .set({
+        'expense': expense,
+      });
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    }
+  }
+
   Future<void> updateBalance(int balance) async {
     try {
       await _db
@@ -78,25 +133,40 @@ class DatabaseController extends GetxController {
     }
   }
 
-  Future<void> streamEvents(DateTime date) async {
+  Future<void> updateIncome(int income) async {
     try {
-      _db
+      await _db
           .collection('users')
           .doc(_auth.currentUserID())
-          .collection('history')
-          .where('date', isEqualTo: date)
-          .snapshots()
-          .listen((event) {
-        event.docChanges.forEach((element) {
-          if (element.type == DocumentChangeType.added) {
-            print(element.doc.data());
-          }
-        });
+          .collection('income')
+          .doc(_auth.currentUserID())
+          .set({
+        'income': income,
       });
     } catch (e) {
       Get.snackbar('Error', e.toString());
     }
   }
+
+  // Future<void> streamEvents(DateTime date) async {
+  //   try {
+  //     _db
+  //         .collection('users')
+  //         .doc(_auth.currentUserID())
+  //         .collection('history')
+  //         .where('date', isEqualTo: date)
+  //         .snapshots()
+  //         .listen((event) {
+  //       event.docChanges.forEach((element) {
+  //         if (element.type == DocumentChangeType.added) {
+  //           print(element.doc.data());
+  //         }
+  //       });
+  //     });
+  //   } catch (e) {
+  //     Get.snackbar('Error', e.toString());
+  //   }
+  // }
 
   Future<List<Event>> getEvents() async {
     try {
@@ -125,6 +195,171 @@ class DatabaseController extends GetxController {
       Get.snackbar('Error', e.toString());
       return [];
     }
+  }
+
+  Future<int> getExpenseforDay(DateTime day) async {
+    DateTime startOfDay = DateTime(day.year, day.month, day.day);
+    DateTime endOfDay = DateTime(day.year, day.month, day.day, 23, 59, 59, 999);
+
+    QuerySnapshot querySnapshot = await _db
+        .collection('users')
+        .doc(_auth.currentUserID())
+        .collection('history')
+        .where('date', isGreaterThanOrEqualTo: startOfDay)
+        .where('date', isLessThanOrEqualTo: endOfDay)
+        .get();
+
+    List<Event> events = querySnapshot.docs.map((doc) {
+      return Event(
+        doc['title'],
+        doc['amount'],
+        doc['date'].toDate(),
+        doc['deposit'],
+      );
+    }).toList();
+
+    int sumDeposits = events
+        .where((event) => event.deposit == false)
+        .fold(0, (previousValue, element) => previousValue + element.amount);
+
+    return sumDeposits;
+  }
+
+  Future<int> getExpenseforWeek(
+      DateTime startOfWeek, DateTime endOfWeek) async {
+    QuerySnapshot querySnapshot = await _db
+        .collection('users')
+        .doc(_auth.currentUserID())
+        .collection('history')
+        .where('date', isGreaterThanOrEqualTo: startOfWeek)
+        .where('date', isLessThanOrEqualTo: endOfWeek)
+        // .where('deposit', isEqualTo: false)
+        .get();
+
+    List<Event> events = querySnapshot.docs.map((doc) {
+      return Event(
+        doc['title'],
+        doc['amount'],
+        doc['date'].toDate(),
+        doc['deposit'],
+      );
+    }).toList();
+    int sumDeposits = events
+        .where((event) => event.deposit == false)
+        .fold(0, (previousValue, element) => previousValue + element.amount);
+
+    return sumDeposits;
+  }
+
+  Future<int> getExpenseforMonth(DateTime month) async {
+    DateTime startOfMonth = DateTime(month.year, month.month, 1);
+    DateTime endOfMonth =
+        DateTime(month.year, month.month + 1, 0, 23, 59, 59, 999);
+
+    QuerySnapshot querySnapshot = await _db
+        .collection('users')
+        .doc(_auth.currentUserID())
+        .collection('history')
+        .where('date', isGreaterThanOrEqualTo: startOfMonth)
+        .where('date', isLessThanOrEqualTo: endOfMonth)
+        .get();
+
+    List<Event> events = querySnapshot.docs.map((doc) {
+      return Event(
+        doc['title'],
+        doc['amount'],
+        doc['date'].toDate(),
+        doc['deposit'],
+      );
+    }).toList();
+
+    int sumDeposits = events
+        .where((event) => event.deposit == false)
+        .fold(0, (previousValue, element) => previousValue + element.amount);
+
+    return sumDeposits;
+  }
+
+  Future<int> getIncomeforDay(DateTime day) async {
+    DateTime startOfDay = DateTime(day.year, day.month, day.day);
+    DateTime endOfDay = DateTime(day.year, day.month, day.day, 23, 59, 59, 999);
+
+    QuerySnapshot querySnapshot = await _db
+        .collection('users')
+        .doc(_auth.currentUserID())
+        .collection('history')
+        .where('date', isGreaterThanOrEqualTo: startOfDay)
+        .where('date', isLessThanOrEqualTo: endOfDay)
+        .get();
+
+    List<Event> events = querySnapshot.docs.map((doc) {
+      return Event(
+        doc['title'],
+        doc['amount'],
+        doc['date'].toDate(),
+        doc['deposit'],
+      );
+    }).toList();
+
+    int sumDeposits = events
+        .where((event) => event.deposit)
+        .fold(0, (previousValue, element) => previousValue + element.amount);
+
+    return sumDeposits;
+  }
+
+  Future<int> getIncomeforWeek(DateTime startOfWeek, DateTime endOfWeek) async {
+    QuerySnapshot querySnapshot = await _db
+        .collection('users')
+        .doc(_auth.currentUserID())
+        .collection('history')
+        .where('date', isGreaterThanOrEqualTo: startOfWeek)
+        .where('date', isLessThanOrEqualTo: endOfWeek)
+        // .where('deposit', isEqualTo: false)
+        .get();
+
+    List<Event> events = querySnapshot.docs.map((doc) {
+      return Event(
+        doc['title'],
+        doc['amount'],
+        doc['date'].toDate(),
+        doc['deposit'],
+      );
+    }).toList();
+    int sumDeposits = events
+        .where((event) => event.deposit)
+        .fold(0, (previousValue, element) => previousValue + element.amount);
+
+    return sumDeposits;
+  }
+
+  Future<int> getIncomeforMonth(DateTime month) async {
+    DateTime startOfMonth = DateTime(month.year, month.month, 1);
+    DateTime endOfMonth =
+        DateTime(month.year, month.month + 1, 0, 23, 59, 59, 999);
+
+    QuerySnapshot querySnapshot = await _db
+        .collection('users')
+        .doc(_auth.currentUserID())
+        .collection('history')
+        .where('date', isGreaterThanOrEqualTo: startOfMonth)
+        .where('date', isLessThanOrEqualTo: endOfMonth)
+        .get();
+
+    List<Event> events = querySnapshot.docs.map((doc) {
+      return Event(
+        doc['title'],
+        doc['amount'],
+        doc['date'].toDate(),
+        doc['deposit'],
+      );
+    }).toList();
+
+    int sumDeposits = events
+        .where((event) => event.deposit)
+        .fold(0, (previousValue, element) => previousValue + element.amount);
+
+    return sumDeposits;
   }
 
   // Future<List<Event>> getEvents() async {

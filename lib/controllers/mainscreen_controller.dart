@@ -1,8 +1,10 @@
-import 'package:expense_tracker/controllers/balance_controller.dart';
 import 'package:expense_tracker/controllers/database_controller.dart';
 import 'package:expense_tracker/controllers/deposit_cotroller.dart';
+import 'package:expense_tracker/controllers/expense%20controller.dart';
+import 'package:expense_tracker/controllers/income_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../models/event.dart';
@@ -12,60 +14,49 @@ class MainScreenController extends GetxController {
   final formKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
   TextEditingController amountController = TextEditingController();
+  TextEditingController depositController = TextEditingController();
   Rx<CalendarFormat> calendarFormat = Rx<CalendarFormat>(CalendarFormat.month);
-  // DateTime? selectedDay;
   Rx<DateTime?> selectedDay = Rx<DateTime?>(null);
   List<Event> all = [];
-  Map<DateTime, List<Event>> events = {
-    DateTime.now(): [
-      Event(
-        'No events',
-        0,
-        DateTime.now(),
-        false,
-      ),
-      Event(
-        'No events',
-        0,
-        DateTime.now(),
-        false,
-      ),
-    ],
-  };
-  // RxList<Event> selectedEvents = <Event>[].obs;
-  // late final ValueNotifier<List<Event>> selectedEvents;
-  // late final RxList<Event> selectedEvents;
+  Map<DateTime, List<Event>> events = {};
+  bool initialDataLoaded = false;
+  bool get isEventsInitialized => selectedEvents != null;
 
-  late final ValueNotifier<List<Event>> selectedEvents;
-  // RxMap<DateTime, List<Event>> events = {}.obs;
-  // RxMap<DateTime, List<Event>> events = RxMap<DateTime, List<Event>>.from({});
+  late ValueNotifier<List<Event>> selectedEvents;
 
-  final depositC = Get.put(DepositController());
+  // final depositC = Get.put(DepositController());
   final dbC = Get.put(DatabaseController());
-  final balanceC = Get.put(BalanceController());
+  // final balanceC = Get.put(BalanceController());
+  final exC = Get.put(ExpenseController());
+  final _incomeC = Get.put(IncomeController());
 
   @override
   void onInit() async {
     selectedDay.value = focusedDay;
-    loadEvents();
+
     selectedEvents =
         ValueNotifier<List<Event>>(getEventsForDay(selectedDay.value!));
-    // selectedEvents = RxList<Event>(getEventsForDay(selectedDay.value!));
+    await loadEvents();
+    ever(selectedDay, (_) {
+      selectedEvents.value = getEventsForDay(selectedDay.value!);
+    });
     super.onInit();
   }
 
-  // void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-  //   if (!isSameDay(this.selectedDay.value ?? DateTime.now(), selectedDay)) {
-  //     this.focusedDay = focusedDay;
-  //     this.selectedDay(DateTime.now());
+  Future<void> loadEvents() async {
+    try {
+      // Fetch events from Firebase
+      List<Event> loadedEvents = await dbC.getEvents();
 
-  //     Future.delayed(const Duration(milliseconds: 50), () {
-  //       this.selectedDay.value = selectedDay;
-  //       selectedEvents.value = getEventsForDay(selectedDay);
-  //       update(); // Trigger a rebuild
-  //     });
-  //   }
-  // }
+      // Update the 'all' list
+      all = loadedEvents;
+
+      // Notify listeners of the selectedEvents ValueNotifier
+      selectedEvents.value = getEventsForDay(selectedDay.value!);
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    }
+  }
 
   void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(this.selectedDay.value ?? DateTime.now(), selectedDay)) {
@@ -74,10 +65,10 @@ class MainScreenController extends GetxController {
       this.selectedDay(DateTime.now());
       // selectedEvents.value = getEventsForDay(selectedDay);
       Future.delayed(const Duration(milliseconds: 50), () {
-        print('Before update: ${selectedEvents.value}');
+        // print('Before update: ${selectedEvents.value}');
         this.selectedDay.value = selectedDay;
         selectedEvents.value = getEventsForDay(selectedDay);
-        print('After update: ${selectedEvents.value}');
+        // print('After update: ${selectedEvents.value}');
         update();
         // selectedEvents.notifyListeners();
       });
@@ -87,87 +78,9 @@ class MainScreenController extends GetxController {
     }
   }
 
-  Future<void> loadEvents() async {
-    try {
-      List<Event> loadedEvents = await dbC.getEvents();
-      // print(loadedEvents);
-
-      for (Event event in loadedEvents) {
-        DateTime date = event.date;
-        if (events[date] == null) {
-          events[date] = [];
-        }
-        Event eventL = Event(
-          event.title,
-          event.amount,
-          event.date,
-          event.deposit,
-        );
-        events[date]!.add(eventL);
-        // print(event.date);
-        // print(event.amount);
-        // print(event.title);
-        // print(event.deposit);
-        // print(eventL.date);
-        // print(events[date].toString());
-        // print('all $events');
-        selectedEvents.value = getEventsForDay(selectedDay.value!);
-      }
-    } catch (e) {
-      Get.snackbar('Error', e.toString());
-    }
-  }
-
-  Map<DateTime, List<Event>> groupEventsByDate(List<Event> eventsList) {
-    Map<DateTime, List<Event>> groupedEvents = {};
-    for (Event event in eventsList) {
-      DateTime date = event.date;
-      if (groupedEvents[date] == null) {
-        groupedEvents[date] = [];
-      }
-      groupedEvents[date]!.add(event);
-    }
-    return groupedEvents;
-  }
-
-  // Future<void> loadEvents() async {
-  //   try {
-  //     List<Event> loadedEvents = await dbC.getEvents();
-  //     // print(loadedEvents);
-
-  //     // Filter events per week
-  //     List<Event> filteredEvents = loadedEvents.where((event) {
-  //       return isSameDay(event.date, focusedDay);
-  //     }).toList();
-
-  //     // Group filtered events by date
-  //     events = groupEventsByDate(filteredEvents);
-  //   } catch (e) {
-  //     Get.snackbar('Error', e.toString());
-  //   }
-  // }
-
   List<Event> getEventsForDay(DateTime day) {
     return all.where((event) => isSameDay(event.date, day)).toList();
   }
-
-  // List<Event> getEventsForDay(DateTime day) {
-  //   return events[day] ??
-  //       [
-  //         // Event(
-  //         //   'No events',
-  //         //   0,
-  //         //   day,
-  //         //   false,
-  //         // ),
-  //         // Event(
-  //         //   'No events',
-  //         //   0,
-  //         //   day,
-  //         //   false,
-  //         // ),
-  //       ];
-  // }
 
   void onFormatChanged(CalendarFormat format) {
     if (calendarFormat.value != format) {
@@ -191,20 +104,41 @@ class MainScreenController extends GetxController {
         selectedDay.value!,
         false,
       );
-      // await dbC.addEvent(event);
-      balanceC.addExpense(amount);
-      events[selectedDay]!.add(
-        Event(
-          titleController.text,
-          int.parse(amountController.text),
-          selectedDay.value!,
-          false,
-        ),
+      await dbC.addEvent(event);
+      exC.addExpense(amount);
+      events[selectedDay.value!]!.add(
+        event,
       );
-      titleController.clear();
-      amountController.clear();
+      all.add(event);
       selectedEvents.value = getEventsForDay(selectedDay.value!);
       Get.back();
+      titleController.clear();
+      amountController.clear();
+    }
+  }
+
+  void addIncome() async {
+    if (formKey.currentState!.validate()) {
+      if (events[selectedDay] == null) {
+        events[selectedDay.value!] = [];
+      }
+
+      final int amount = int.parse(depositController.text);
+      final Event event = Event(
+        'Income',
+        amount,
+        selectedDay.value!,
+        true,
+      );
+      await dbC.addEvent(event);
+      _incomeC.addIncome(amount, selectedDay.value!);
+      events[selectedDay.value!]!.add(
+        event,
+      );
+      all.add(event);
+      selectedEvents.value = getEventsForDay(selectedDay.value!);
+      Get.back();
+      depositController.clear();
     }
   }
 
@@ -248,6 +182,7 @@ class MainScreenController extends GetxController {
                   controller: amountController,
                   decoration: const InputDecoration(
                     labelText: 'Amount',
+                    prefix: Text('Rp '),
                     labelStyle: TextStyle(color: Colors.black),
                     // border: OutlineInputBorder(),
                     enabledBorder: UnderlineInputBorder(
@@ -278,7 +213,7 @@ class MainScreenController extends GetxController {
         width: double.infinity,
         color: Colors.white,
         child: Form(
-          key: depositC.form,
+          key: formKey,
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: ListView(
@@ -293,7 +228,7 @@ class MainScreenController extends GetxController {
                   height: 10,
                 ),
                 TextFormField(
-                  controller: depositC.depositController,
+                  controller: depositController,
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -303,6 +238,7 @@ class MainScreenController extends GetxController {
                   },
                   decoration: const InputDecoration(
                     labelText: 'Amount',
+                    prefix: Text('Rp '),
                     labelStyle: TextStyle(color: Colors.black),
                     // border: OutlineInputBorder(),
                     enabledBorder: UnderlineInputBorder(
@@ -316,7 +252,7 @@ class MainScreenController extends GetxController {
                 ),
                 ElevatedButton(
                   // onPressed: () {},
-                  onPressed: () => depositC.addDeposit(selectedDay.value!),
+                  onPressed: addIncome,
                   child: const Text('add'),
                 ),
               ],

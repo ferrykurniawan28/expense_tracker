@@ -8,7 +8,7 @@ class LoginBinding extends Bindings {
   void dependencies() {
     Get.lazyPut(() => LoginController());
     Get.put(AuthController());
-    Get.put(DepositController());
+    // Get.put(DepositController());
     // Get.put(BalanceController());
   }
 }

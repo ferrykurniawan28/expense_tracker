@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:expense_tracker/currency.dart';
 
+import 'event_list.dart';
+
 // final auth = FirebaseAuth.instance;
 final db = FirebaseFirestore.instance;
 
@@ -54,16 +56,19 @@ class MainScreen extends GetView<MainScreenController> {
                 child: Text('Error: ${snapshot.error}'),
               );
             }
-            controller.all = snapshot.data!.docs.map<Event>(
-              (data) {
-                return Event(
-                  data['title'],
-                  data['amount'],
-                  data['date'].toDate(),
-                  data['deposit'],
-                );
-              },
-            ).toList();
+            if (!controller.initialDataLoaded) {
+              controller.all = snapshot.data!.docs.map<Event>(
+                (data) {
+                  return Event(
+                    data['title'],
+                    data['amount'],
+                    data['date'].toDate(),
+                    data['deposit'],
+                  );
+                },
+              ).toList();
+              controller.initialDataLoaded = true;
+            }
             return Column(
               children: [
                 Obx(
@@ -111,60 +116,7 @@ class MainScreen extends GetView<MainScreenController> {
                 Obx(
                   () => Text(controller.selectedDay.toString().split(" ")[0]),
                 ),
-                Expanded(
-                  child: ValueListenableBuilder<List<Event>>(
-                    valueListenable: controller.selectedEvents,
-                    builder: (context, value, _) {
-                      return ListView.builder(
-                        itemCount: value.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            child: ListTile(
-                              title: Text(value[index].title),
-                              subtitle: Text(
-                                  CurrencyFormat.convertToIdr(
-                                    value[index].amount,
-                                    0,
-                                  ),
-                                  style: TextStyle(
-                                    color: value[index].deposit
-                                        ? Colors.green
-                                        : Colors.red,
-                                  )),
-                              leading: Icon(value[index].deposit
-                                  ? Icons.arrow_upward
-                                  : Icons.arrow_downward),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-                // Expanded(
-                //   child: Obx(() {
-                //     return ListView.builder(
-                //       itemCount: controller.selectedEvents.length,
-                //       itemBuilder: (context, index) {
-                //         return Card(
-                //           child: ListTile(
-                //             title: Text(controller.selectedEvents[index].title),
-                //             subtitle: Text(
-                //               CurrencyFormat.convertToIdr(
-                //                   controller.selectedEvents[index].amount, 0),
-                //             ),
-                //             trailing: IconButton(
-                //               icon: const Icon(Icons.print),
-                //               onPressed: () {
-                //                 print(controller.selectedEvents);
-                //               },
-                //             ),
-                //           ),
-                //         );
-                //       },
-                //     );
-                //   }),
-                // ),
+                EventList(controller: controller),
               ],
             );
           }),

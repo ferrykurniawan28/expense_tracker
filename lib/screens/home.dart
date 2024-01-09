@@ -1,8 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:expense_tracker/controllers/auth_controller.dart';
 import 'package:expense_tracker/controllers/balance_controller.dart';
+import 'package:expense_tracker/controllers/expense%20controller.dart';
 import 'package:expense_tracker/controllers/home_controller.dart';
-import 'package:expense_tracker/controllers/homemain_controller.dart';
+import 'package:expense_tracker/controllers/income_controller.dart';
 import 'package:expense_tracker/routes/routes_name.dart';
 import 'package:expense_tracker/screens/homemain.dart';
 import 'package:expense_tracker/screens/mainscreen.dart';
@@ -12,7 +13,9 @@ import 'package:get/get.dart';
 class Home extends GetView<HomeController> {
   Home({super.key});
   final homeC = Get.put(HomeController());
-  final balanceC = Get.put(BalanceController());
+  // final balanceC = Get.put(BalanceController());
+  // final expenseC = Get.put(ExpenseController());
+  // final incomeC = Get.put(IncomeController());
 
   @override
   Widget build(BuildContext context) {

@@ -39,6 +39,7 @@ class HomeMainController extends GetxController {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Target Balance',
+                  prefix: Text('RP '),
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
