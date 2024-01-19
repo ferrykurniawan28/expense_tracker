@@ -7,14 +7,19 @@ class SplashController extends GetxController {
   RxBool isLoggedIn = false.obs;
 
   @override
-  void onReady() {
+  void onInit() async {
     isLoggedIn.value = _auth.isLoggedIn.value;
-    print(isLoggedIn.value);
+    super.onInit();
+  }
+
+  @override
+  void onReady() {
+    checkLogin();
     super.onReady();
   }
 
   void checkLogin() {
-    if (!isLoggedIn.value) {
+    if (isLoggedIn.value) {
       Get.offAllNamed(RouteName.home);
     } else {
       Get.offAllNamed(RouteName.login);

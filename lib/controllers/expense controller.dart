@@ -1,3 +1,7 @@
+// import 'dart:async';
+
+import 'dart:async';
+
 import 'package:expense_tracker/controllers/balance_controller.dart';
 import 'package:expense_tracker/controllers/database_controller.dart';
 import 'package:get/get.dart';
@@ -19,10 +23,18 @@ class ExpenseController extends GetxController {
   @override
   void onInit() async {
     endOfWeek = startOfWeek.add(const Duration(days: 6));
-    expense.value = await _dbC.getExpense();
-    expenseforDay.value = await _dbC.getExpenseforDay(today);
-    expenseforWeek.value = await _dbC.getExpenseforWeek(startOfWeek, endOfWeek);
-    expenseforMonth.value = await _dbC.getExpenseforMonth(today);
+
+    Timer.periodic(const Duration(seconds: 1), (timer) async {
+      expense.value = await _dbC.getExpense();
+      expenseforDay.value = await _dbC.getExpenseforDay(today);
+      expenseforWeek.value =
+          await _dbC.getExpenseforWeek(startOfWeek, endOfWeek);
+      expenseforMonth.value = await _dbC.getExpenseforMonth(today);
+    });
+    // expense.value = await _dbC.getExpense();
+    // expenseforDay.value = await _dbC.getExpenseforDay(today);
+    // expenseforWeek.value = await _dbC.getExpenseforWeek(startOfWeek, endOfWeek);
+    // expenseforMonth.value = await _dbC.getExpenseforMonth(today);
     super.onInit();
   }
 

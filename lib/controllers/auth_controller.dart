@@ -13,7 +13,7 @@ class AuthController extends GetxController {
 
   @override
   void onInit() {
-    _subscribe();
+    subscribe();
     super.onInit();
   }
 
@@ -22,16 +22,12 @@ class AuthController extends GetxController {
     return uid;
   }
 
-  void _subscribe() {
+  void subscribe() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         isLoggedIn(false);
-        // log('User is currently signed out');
-        // print('User is currently signed out');
       } else {
         isLoggedIn(true);
-        // log('User is signed in');
-        // print('User is signed in');
       }
     });
   }

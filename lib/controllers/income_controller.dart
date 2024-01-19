@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:expense_tracker/controllers/balance_controller.dart';
 import 'package:expense_tracker/controllers/database_controller.dart';
 import 'package:get/get.dart';
@@ -19,6 +21,12 @@ class IncomeController extends GetxController {
   @override
   void onInit() async {
     endOfWeek = startOfWeek.add(const Duration(days: 6));
+    Timer.periodic(const Duration(seconds: 1), (timer) async {
+      income.value = await _dbC.getIncome();
+      incomeforDay.value = await _dbC.getIncomeforDay(DateTime.now());
+      incomeforWeek.value = await _dbC.getIncomeforWeek(startOfWeek, endOfWeek);
+      incomeforMonth.value = await _dbC.getIncomeforMonth(today);
+    });
     income.value = await _dbC.getIncome();
     incomeforDay.value = await _dbC.getIncomeforDay(DateTime.now());
     incomeforWeek.value = await _dbC.getIncomeforWeek(startOfWeek, endOfWeek);

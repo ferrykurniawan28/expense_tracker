@@ -25,7 +25,7 @@ class Login extends GetView<LoginController> {
               // mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.255,
+                  height: MediaQuery.of(context).size.height * 0.261,
                 ),
                 const Center(
                   child: Text(

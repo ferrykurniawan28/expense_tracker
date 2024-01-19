@@ -1,6 +1,7 @@
 import 'package:expense_tracker/controllers/database_controller.dart';
 import 'package:expense_tracker/controllers/expense%20controller.dart';
 import 'package:expense_tracker/controllers/income_controller.dart';
+import 'package:expense_tracker/models/thousendformat.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -13,6 +14,8 @@ class MainScreenController extends GetxController {
   TextEditingController titleController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController depositController = TextEditingController();
+  TextEditingController unformattedAmountController = TextEditingController();
+  TextEditingController unformattedDepositController = TextEditingController();
   Rx<CalendarFormat> calendarFormat = Rx<CalendarFormat>(CalendarFormat.month);
   Rx<DateTime?> selectedDay = Rx<DateTime?>(null);
   List<Event> all = [];
@@ -95,7 +98,7 @@ class MainScreenController extends GetxController {
       if (events[selectedDay] == null) {
         events[selectedDay.value!] = [];
       }
-      final int amount = int.parse(amountController.text);
+      final int amount = int.parse(amountController.text.replaceAll(',', ''));
       final Event event = Event(
         titleController.text,
         amount,
@@ -121,7 +124,7 @@ class MainScreenController extends GetxController {
         events[selectedDay.value!] = [];
       }
 
-      final int amount = int.parse(depositController.text);
+      final int amount = int.parse(depositController.text.replaceAll(',', ''));
       final Event event = Event(
         'Income',
         amount,
@@ -187,6 +190,16 @@ class MainScreenController extends GetxController {
                       borderSide: BorderSide(color: Colors.black),
                     ),
                   ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter Amount';
+                    }
+                    return null;
+                  },
+                  inputFormatters: [
+                    ThousandsFormatter(),
+                  ],
                   style: const TextStyle(color: Colors.black),
                 ),
                 const SizedBox(
@@ -243,13 +256,15 @@ class MainScreenController extends GetxController {
                       borderSide: BorderSide(color: Colors.black),
                     ),
                   ),
+                  inputFormatters: [
+                    ThousandsFormatter(),
+                  ],
                   style: const TextStyle(color: Colors.black),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 ElevatedButton(
-                  // onPressed: () {},
                   onPressed: addIncome,
                   child: const Text('add'),
                 ),

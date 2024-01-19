@@ -1,5 +1,4 @@
 import 'package:expense_tracker/controllers/splash_controller.dart';
-import 'package:expense_tracker/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

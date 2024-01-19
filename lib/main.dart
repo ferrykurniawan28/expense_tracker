@@ -20,18 +20,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final _authC = Get.put(
-    //   AuthController(),
-    //   permanent: true,
-    // );
     return GetMaterialApp(
+      showPerformanceOverlay: true,
+      title: 'Expense Tracker',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: GoogleFonts.merriweatherTextTheme(
           Theme.of(context).textTheme,
         ),
       ),
-      // home: const MainScreen(),
       initialBinding: InitialBinding(),
       initialRoute: RouteName.splash,
       getPages: RoutesClass.pages,
