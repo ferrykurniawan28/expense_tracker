@@ -1,4 +1,5 @@
 import 'package:expense_tracker/controllers/signup_controller.dart';
+import 'package:expense_tracker/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -128,7 +129,8 @@ class SignUp extends GetView<SignUpController> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Get.back();
+                    // Get.back();
+                    Get.toNamed(RouteName.login);
                   },
                   child: const Text(
                     'Login',
