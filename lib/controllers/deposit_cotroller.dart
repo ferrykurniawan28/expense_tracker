@@ -1,27 +1,20 @@
-import 'package:expense_tracker/controllers/balance_controller.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+// import 'package:expense_tracker/controllers/balance_controller.dart';
+// import 'package:expense_tracker/controllers/income_controller.dart';
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
 
-class DepositController extends GetxController {
-  TextEditingController depositController = TextEditingController();
-  final form = GlobalKey<FormState>();
-  final _balance = Get.put(BalanceController());
+// class DepositController extends GetxController {
+//   // TextEditingController depositController = TextEditingController();
+//   // final form = GlobalKey<FormState>();
+//   // final _balance = Get.put(BalanceController());
+//   final _incomeC = Get.put(IncomeController());
 
-  void addDeposit(DateTime date) {
-    final isValid = form.currentState!.validate();
-    if (!isValid) {
-      return;
-    }
-    int balance = int.parse(depositController.text);
-    _balance.addIncome(balance, date);
-    depositController.clear();
-    Get.snackbar('Success', 'Deposit success');
-    Get.back();
-  }
+//   void addDeposit(DateTime date, int amount) {
+//     _incomeC.addIncome(amount, date);
+//   }
 
-  @override
-  void dispose() {
-    depositController.dispose();
-    super.dispose();
-  }
-}
+//   @override
+//   void dispose() {
+//     super.dispose();
+//   }
+// }

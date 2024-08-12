@@ -1,5 +1,4 @@
 import 'package:expense_tracker/controllers/database_controller.dart';
-import 'package:expense_tracker/models/event.dart';
 import 'package:get/get.dart';
 
 class BalanceController extends GetxController {
@@ -15,16 +14,9 @@ class BalanceController extends GetxController {
     super.onInit();
   }
 
-  void addIncome(int amount, DateTime date) {
+  void addIncome(int amount, DateTime date) async {
     balance.value += amount;
     _dbC.updateBalance(balance.value);
-    final Event data = Event(
-      'Income',
-      amount,
-      date,
-      true,
-    );
-    _dbC.addEvent(data);
   }
 
   void addExpense(int amount) {

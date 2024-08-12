@@ -1,4 +1,5 @@
 import 'package:expense_tracker/controllers/balance_controller.dart';
+import 'package:expense_tracker/models/thousendformat.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +20,7 @@ class HomeMainController extends GetxController {
     if (!isValid) {
       return;
     }
-    int target = int.parse(balanceTargetController.text);
+    int target = int.parse(balanceTargetController.text.replaceAll(',', ''));
     _balance.editTargetBalance(target);
     balanceTargetController.clear();
     Get.back();
@@ -39,8 +40,12 @@ class HomeMainController extends GetxController {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Target Balance',
+                  prefix: Text('RP '),
                   border: OutlineInputBorder(),
                 ),
+                inputFormatters: [
+                  ThousandsFormatter(),
+                ],
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter target balance';

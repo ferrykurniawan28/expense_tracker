@@ -7,19 +7,36 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   final _auth = FirebaseAuth.instance;
+  RxBool isLoggedIn = false.obs;
 
   Stream<User?> get streamUserState => _auth.authStateChanges();
+
+  @override
+  void onInit() {
+    subscribe();
+    super.onInit();
+  }
 
   String currentUserID() {
     final uid = _auth.currentUser!.uid;
     return uid;
   }
 
+  void subscribe() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        isLoggedIn(false);
+      } else {
+        isLoggedIn(true);
+      }
+    });
+  }
+
   void login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       Get.snackbar('Success', 'Logged in successfully');
-      Get.toNamed(RouteName.home);
+      // Get.toNamed(RouteName.home);
       Get.offAllNamed(RouteName.home);
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Error', e.message!);
